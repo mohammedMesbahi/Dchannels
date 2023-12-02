@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416756097229",
+    "project_id": "dchannels-backend",
+    "storage_bucket": "dchannels-backend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416756097229:android:f2d7c36870c829b0224984",
+        "android_client_info": {
+          "package_name": "com.example.dchannels"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUilc-bJvoc2o15oYmIRRJnEI5rvnvHsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

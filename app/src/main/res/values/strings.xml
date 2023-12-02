@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Dsic-channels</string>
+    <string name="title_activity_add_moderator">AddModeratorActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="add_admin">Add New Admin</string>
+    <string name="add_profile_pic" >choose an image</string>
+</resources>
