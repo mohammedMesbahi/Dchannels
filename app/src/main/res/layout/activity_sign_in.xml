@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".ui.SignInActivity">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/signin_background_with_image"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <!-- text view sign in-->
+        <TextView
+            android:id="@+id/sign_in_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/sign_in"
+            android:textSize="30sp"
+            android:textColor="@color/secondary"
+            android:layout_marginBottom="20dp"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edit_text_background"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:hint="Password"
+            android:inputType="text" />
+        <!-- forgot password -->
+        <TextView
+            android:id="@+id/forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Forgot password?"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+        <!-- sign in button -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            >
+            <Button
+                android:id="@+id/sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Sign in"
+                android:textColor="@color/white" />
+            <ProgressBar
+                android:id="@+id/sign_in_progress_bar"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+               />
+        </FrameLayout>
+        <!--sign in with google-->
+
+        <com.shobhitpuri.custombuttons.GoogleSignInButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/google_sign_in"
+            app:isDarkTheme="true" />
+    </LinearLayout>
+
+</LinearLayout>

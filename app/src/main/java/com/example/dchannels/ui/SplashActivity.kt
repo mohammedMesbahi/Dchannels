@@ -22,10 +22,10 @@ class SplashActivity : AppCompatActivity() {
         window.decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(binding.root)
         // Delay in milliseconds
-        val delayMillis: Long = 3000
+        val delayMillis: Long = 2000
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, AddAdminActivity::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
             finish()  // Optional: if you want to close the current activity
         }, delayMillis)

@@ -43,6 +43,7 @@ class AddAdminActivity : AppCompatActivity() {
         mainLayout.setOnClickListener { toggle() }
         // Trigger the initial hide() shortly after the activity has been created.
         delayedHide(100)
+
         imagePickLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->

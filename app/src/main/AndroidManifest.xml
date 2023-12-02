@@ -12,6 +12,9 @@
         android:theme="@style/Theme.Dchannels"
         tools:targetApi="31">
         <activity
+            android:name=".ui.SignInActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.AddAdminActivity"
             android:exported="false" />
         <activity
