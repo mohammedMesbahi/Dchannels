@@ -47,21 +47,27 @@ class Utilities {
             return imageRef.putFile(imageUri)
         }
         
-        fun loadImageIntoView(imageView: ImageView, user: User) {
-            // Get Firebase storage instance
-            val storage = FirebaseStorage.getInstance()
-            // Create a reference to the image
-            val imageRef = storage.reference.child("${Constants.PROFILE_IMAGE_PATH}${user.id}")
+        fun loadImageIntoView(imageView: ImageView, id: String) {
+            FirebaseStorage.getInstance().getReference().child("profile_pics")
+                .child(id)
+            if (id != null && id.isNotEmpty()){
+                // Get Firebase storage instance
+                val storage = FirebaseStorage.getInstance()
+                // Create a reference to the image
+                val imageRef = storage.reference.child("profile_pics").child(id)
 
-            // Download and display the image using Glide
-            imageRef.downloadUrl.addOnSuccessListener { uri ->
-                Glide.with(imageView.context)
-                    .load(uri)
-                    .into(imageView)
-            }.addOnFailureListener {
-                // Handle any errors
-                showToast(imageView.context as AppCompatActivity,"Image load failed ${it.message}")
+                // Download and display the image using Glide
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    Glide.with(imageView.context)
+                        .load(uri)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imageView)
+                }.addOnFailureListener {
+                    // Handle any errors
+                    showToast(imageView.context as AppCompatActivity,"Image load failed ${it.message}")
+                }
             }
+
         }
 
 

@@ -77,78 +77,9 @@ class AddAdminActivity : AppCompatActivity() {
             }
         }
         binding.addBtn.setOnClickListener {
-            if (binding.username.text.toString().trim().isEmpty()) {
-                binding.username.error = "Username is required"
-                return@setOnClickListener
-            } else if (binding.email.text.toString().trim().isEmpty()
-                || !android.util.Patterns.EMAIL_ADDRESS.matcher(
-                    binding.email.text.toString().trim()
-                ).matches()
-            ) {
-                binding.email.error = " A valid Email is required"
-                return@setOnClickListener
-            } else if (binding.password.text.toString().trim().isEmpty()) {
-                binding.password.error = "Password is required"
-                return@setOnClickListener
-            } else if (binding.confirmPassword.text.toString().trim().isEmpty()) {
-                binding.confirmPassword.error = "Confirm Password is required"
-                return@setOnClickListener
-            } else if (binding.password.text.toString()
-                    .trim() != binding.confirmPassword.text.toString().trim()
-            ) {
-                binding.confirmPassword.error = "Password and Confirm Password must be same"
-                return@setOnClickListener
-            } else {
-                isLoading = !isLoading
-                Utilities.toggleLoading(isLoading, binding.addBtn, binding.progressBar)
-                var admin = Admin(
-                    binding.username.text.toString().trim(),
-                    binding.email.text.toString().trim(),
-                    binding.password.text.toString().trim(),
-                )
-                AdminDoaStore.getInstance().addAdmin(admin)
-                    .addOnSuccessListener { documentReference ->
-                        admin.id = documentReference.id
-                        // add image to cloud storage
-                        if (selectedImageUri != Uri.EMPTY) {
-                            Utilities.uploadImageToCloudStorage(
-                                admin,
-                                selectedImageUri!! as Uri
-                            )
-                                .addOnSuccessListener { taskSnapshot ->
-                                    resetAllFields()
-                                    // Task completed successfully
-                                    admin.profileImage =
-                                        taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
-                                    AdminDoaStore.getInstance().updateAdminImage(admin)
-                                        .addOnSuccessListener {
-                                            Utilities.showToast(
-                                                this,
-                                                "Admin added successfully"
-                                            )
-                                        }
-                                        .addOnFailureListener { exception ->
-                                            Utilities.showToast(
-                                                this,
-                                                "Error adding admin ${exception.message}"
-                                            )
-                                        }
-                                }
-                                .addOnFailureListener {
-                                    // Handle unsuccessful uploads
-                                    Utilities.showToast(this, "failed to upload image")
-                                }
-                        } else {
-                            admin.profileImage =
-                                Uri.parse("android.resource://com.example.dchannels/drawable/profile_pic")
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        resetAllFields()
-                        Utilities.showToast(this, "Error adding admin ${exception.message}")
-                    }
+            if (isInputsValid()) {
+                addAdmin()
             }
-
         }
         binding.profilePic.setOnClickListener {
             ImagePicker.with(this)
@@ -162,7 +93,83 @@ class AddAdminActivity : AppCompatActivity() {
         }
 
     }
-    fun resetAllFields() {
+
+    private fun addAdmin() {
+        isLoading = !isLoading
+        Utilities.toggleLoading(isLoading, binding.addBtn, binding.progressBar)
+        var admin = Admin(
+            binding.username.text.toString().trim(),
+            binding.email.text.toString().trim(),
+            binding.password.text.toString().trim(),
+        )
+        AdminDoaStore.getInstance().addAdmin(admin)
+            .addOnSuccessListener { documentReference ->
+                admin.id = documentReference.id
+                // add image to cloud storage
+                if (selectedImageUri != Uri.EMPTY) {
+                    Utilities.uploadImageToCloudStorage(admin, selectedImageUri!! as Uri)
+                        .addOnSuccessListener { taskSnapshot ->
+                            resetAllFields()
+                            // Task completed successfully
+                            admin.profileImage =
+                                taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                            AdminDoaStore.getInstance().updateAdminImage(admin)
+                                .addOnSuccessListener {
+                                    Utilities.showToast(
+                                        this,
+                                        "Admin added successfully"
+                                    )
+                                }
+                                .addOnFailureListener { exception ->
+                                    Utilities.showToast(
+                                        this,
+                                        "Error updating admin image ${exception.message}"
+                                    )
+                                }
+                        }
+                        .addOnFailureListener {
+                            // Handle unsuccessful uploads
+                            Utilities.showToast(this, "failed to upload image")
+                        }
+                } else {
+                    admin.profileImage =
+                        Uri.parse("android.resource://com.example.dchannels/drawable/profile_pic")
+                }
+            }
+            .addOnFailureListener { exception ->
+                resetAllFields()
+                Utilities.showToast(this, "Error adding admin ${exception.message}")
+            }
+    }
+
+    private fun isInputsValid(): Boolean {
+        if (binding.username.text.toString().trim().isEmpty()) {
+            binding.username.error = "Username is required"
+            return false
+        } else if (binding.email.text.toString().trim().isEmpty()
+            || !android.util.Patterns.EMAIL_ADDRESS.matcher(
+                binding.email.text.toString().trim()
+            ).matches()
+        ) {
+            binding.email.error = " A valid Email is required"
+            return false
+        } else if (binding.password.text.toString().trim().isEmpty()) {
+            binding.password.error = "Password is required"
+            return false
+        } else if (binding.confirmPassword.text.toString().trim().isEmpty()) {
+            binding.confirmPassword.error = "Confirm Password is required"
+            return false
+        } else if (binding.password.text.toString()
+                .trim() != binding.confirmPassword.text.toString().trim()
+        ) {
+            binding.confirmPassword.error = "Password and Confirm Password must be same"
+            return false
+        }
+        return true
+
+    }
+
+    private fun resetAllFields() {
         isLoading = !isLoading
         Utilities.toggleLoading(
             isLoading,

@@ -1,13 +1,18 @@
 package com.example.dchannels.ui
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.widget.Toast
+import com.example.dchannels.Constants
+import com.example.dchannels.Models.Admin
 import com.example.dchannels.databinding.ActivitySignInBinding
 import com.example.dchannels.utilities.Authentication
 import com.example.dchannels.utilities.MyPreferences
@@ -51,10 +56,40 @@ class SignInActivity : AppCompatActivity() {
 
     fun signIn() {
         isLoading = true
-        Utilities.toggleLoading(isLoading,binding.signInButton, binding.signInProgressBar)
+        Utilities.toggleLoading(isLoading, binding.signInButton, binding.signInProgressBar)
         val email = binding.emailEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
-        Authentication.signIn(email,password)
+        Authentication.signIn(email, password)
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Utilities.showToast(
+                        this,
+                        "email or password is incorrect"
+                    )
+                } else {
+                    val admin = Admin(
+                        documents.documents[0].id,
+                        documents.documents[0].data?.get(Constants.USER_NAME_FIELD).toString(),
+                        documents.documents[0].data?.get(Constants.USER_EMAIL_FIELD).toString(),
+                        documents.documents[0].data?.get(Constants.USER_PASSWORD_FIELD).toString()
+                    )
+                    admin.profileImage = documents.documents[0].data?.get(Constants.USER_PROFILE_IMAGE_FIELD).toString()
+                    Log.d("Constants.TAG", documents.documents[0].data?.get(Constants.USER_PROFILE_IMAGE_FIELD).toString())
+                            preferenceManager.id = admin.id
+                            preferenceManager.name = admin.name
+                            preferenceManager.email = admin.email
+                            preferenceManager.profileImage = admin.profileImage as String
+
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                    }
+                isLoading = false
+                Utilities.toggleLoading(isLoading, binding.signInButton, binding.signInProgressBar)
+                }
+            .addOnFailureListener { exception ->
+                Utilities.showToast(this, "Error: ${exception.message}")
+            }
     }
 
     fun isValidSingInDetails(): Boolean {
@@ -62,12 +97,12 @@ class SignInActivity : AppCompatActivity() {
             || !android.util.Patterns.EMAIL_ADDRESS.matcher(binding.emailEditText.text.toString())
                 .matches()
         ) {
-            return false
             binding.emailEditText.error = "Please enter a valid email"
+            return false
         }
         if (binding.passwordEditText.text.toString().isEmpty()) {
-            return false
             binding.passwordEditText.error = "Please enter password"
+            return false
         }
         return true
     }
