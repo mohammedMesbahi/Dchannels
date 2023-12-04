@@ -7,6 +7,7 @@ import com.example.dchannels.R
 import com.example.dchannels.databinding.ActivityHomeBinding
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : AppCompatActivity() {
 
@@ -23,5 +24,11 @@ class HomeActivity : AppCompatActivity() {
     private fun populateViews() {
         binding.nameTextView.text = preferenceManager.name
         preferenceManager.id?.let { Utilities.loadImageIntoView(binding.profileImageView, it) }
+    }
+    private fun updateToken(token:String){
+        FirebaseFirestore.getInstance().collection(Constants.ADMINS_COLLECTION)
+            .document(preferenceManager.id).update(Constants.FCM_TOKEN_FIELD,token)
+            .addOnSuccessListener { Utilities.showToast(this,"Token updated successfully") }
+            .addOnFailureListener { e -> Utilities.showToast(this,"Failed to update Token ${e.message}")}
     }
 }

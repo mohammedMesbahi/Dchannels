@@ -20,4 +20,6 @@ object Constants {
     const val PROFILE_IMAGE_PATH = "profile_pics/"
     const val DEFAULT_PROFILE_IMAGE_PATH = "profile_pics/default_pic.png"
 
+    const val FCM_TOKEN_FIELD = "fcmToken"
+
 }
