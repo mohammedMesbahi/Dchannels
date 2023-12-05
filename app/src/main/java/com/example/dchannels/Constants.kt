@@ -17,7 +17,7 @@ object Constants {
     const val KEY_IS_LOGGED_IN = "isLoggedIn"
     const val KEY_PREFERENCE_NAME = "chatAppPreference"
 
-    const val PROFILE_IMAGE_PATH = "profile_pics/"
+    const val FOLDER_PROFILE_PICS = "profile_pics"
     const val DEFAULT_PROFILE_IMAGE_PATH = "profile_pics/default_pic.png"
 
     const val FCM_TOKEN_FIELD = "fcmToken"

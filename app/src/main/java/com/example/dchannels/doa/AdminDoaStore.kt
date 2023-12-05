@@ -4,6 +4,7 @@ import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminDoaStore : AdminDoa {
@@ -44,6 +45,11 @@ class AdminDoaStore : AdminDoa {
         getInstance().
         collection(Constants.ADMINS_COLLECTION).
         document(admin.id!!).update(map)
+    }
+
+    override fun getAdminById(id: String): Task<DocumentSnapshot> {
+        return FirebaseFirestore.getInstance().collection(Constants.ADMINS_COLLECTION)
+            .document(id).get()
     }
 
     fun addModerator() {

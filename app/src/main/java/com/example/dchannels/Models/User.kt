@@ -4,13 +4,13 @@ open class User {
     var id: String?
     var name: String
     var email: String
-    var profileImage: Any
+    var profileImage: String
     var role: String
 
     constructor(
         name: String,
         email: String,
-        profileImage: Any,
+        profileImage: String,
         role: String
     ) : this(name, email) {
         this.id = id

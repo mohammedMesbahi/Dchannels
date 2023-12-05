@@ -10,15 +10,19 @@ import android.text.InputType
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
 import com.example.dchannels.databinding.ActivityAddAdminBinding
 import com.example.dchannels.doa.AdminDoaStore
 import com.example.dchannels.utilities.Utilities
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AddAdminActivity : AppCompatActivity() {
 
@@ -97,48 +101,62 @@ class AddAdminActivity : AppCompatActivity() {
     private fun addAdmin() {
         isLoading = !isLoading
         Utilities.toggleLoading(isLoading, binding.addBtn, binding.progressBar)
+
         var admin = Admin(
             binding.username.text.toString().trim(),
             binding.email.text.toString().trim(),
             binding.password.text.toString().trim(),
         )
-        AdminDoaStore.getInstance().addAdmin(admin)
-            .addOnSuccessListener { documentReference ->
-                admin.id = documentReference.id
-                // add image to cloud storage
-                if (selectedImageUri != Uri.EMPTY) {
-                    Utilities.uploadImageToCloudStorage(admin, selectedImageUri!! as Uri)
-                        .addOnSuccessListener { taskSnapshot ->
-                            resetAllFields()
-                            // Task completed successfully
-                            admin.profileImage =
-                                taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
-                            AdminDoaStore.getInstance().updateAdminImage(admin)
-                                .addOnSuccessListener {
-                                    Utilities.showToast(
-                                        this,
-                                        "Admin added successfully"
-                                    )
+
+        // Create admin account with email and password
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(admin.email, admin.password)
+            .addOnCompleteListener(this) { task ->
+                // Admin account created successfully
+                if (task.isSuccessful) {
+                    // Store additional details in Firestore
+                    admin.id =  task.result?.user?.uid
+                    val adminsCollection = FirebaseFirestore.getInstance().collection(Constants.ADMINS_COLLECTION)
+                    val adminData = hashMapOf(
+                        Constants.USER_NAME_FIELD to admin.name,
+                        Constants.USER_EMAIL_FIELD to admin.email,
+                        Constants.USER_PASSWORD_FIELD to admin.password,
+                        Constants.USER_PROFILE_IMAGE_FIELD to admin.id,
+                        // Add other fields as needed
+                    )
+                    admin.id?.let {
+                        adminsCollection.document(it).set(adminData)
+                            .addOnCompleteListener(this) { task ->
+                                if (task.isSuccessful) {
+                                    // Admin data stored successfully
+                                    // You can navigate to the admin dashboard or perform other actions
+                                    Toast.makeText(baseContext, "Admin added successfully", Toast.LENGTH_SHORT).show()
+                                    if (selectedImageUri != Uri.EMPTY) {
+                                        Utilities.uploadImageToCloudStorage(admin, selectedImageUri as Uri)
+                                            .addOnCompleteListener(this) {
+                                                if (task.isSuccessful) {
+                                                    Toast.makeText(baseContext, "image added successfully", Toast.LENGTH_SHORT).show()
+                                                } else {
+                                                    // Handle unsuccessful uploads
+                                                    Utilities.showToast(this, "failed to upload image")
+                                                }
+                                                resetAllFields()
+                                            }
+                                    } else {
+                                        admin.profileImage = ""
+                                    }
                                 }
-                                .addOnFailureListener { exception ->
-                                    Utilities.showToast(
-                                        this,
-                                        "Error updating admin image ${exception.message}"
-                                    )
+                                else {
+                                    Toast.makeText(baseContext, "Failed to store admin data: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
-                        }
-                        .addOnFailureListener {
-                            // Handle unsuccessful uploads
-                            Utilities.showToast(this, "failed to upload image")
-                        }
-                } else {
-                    admin.profileImage =
-                        Uri.parse("android.resource://com.example.dchannels/drawable/profile_pic")
+                            }
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                resetAllFields()
-                Utilities.showToast(this, "Error adding admin ${exception.message}")
+                else {
+                    // If registration fails, display a message to the user.
+                    Toast.makeText(baseContext, "Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+                isLoading = !isLoading
+                Utilities.toggleLoading(isLoading, binding.addBtn, binding.progressBar)
             }
     }
 
@@ -170,12 +188,6 @@ class AddAdminActivity : AppCompatActivity() {
     }
 
     private fun resetAllFields() {
-        isLoading = !isLoading
-        Utilities.toggleLoading(
-            isLoading,
-            binding.addBtn,
-            binding.progressBar
-        )
         binding.username.text.clear()
         binding.email.text.clear()
         binding.password.text.clear()

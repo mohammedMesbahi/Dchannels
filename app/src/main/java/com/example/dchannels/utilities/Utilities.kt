@@ -41,7 +41,7 @@ class Utilities {
             // Create a storage reference
             val storageRef = storage.reference
             // Create a reference to 'images/specificId.jpg'
-            val imageRef = storageRef.child("${Constants.PROFILE_IMAGE_PATH}${user.id}")
+            val imageRef = storageRef.child(Constants.FOLDER_PROFILE_PICS).child(user.id!!)
             // Upload the file to Firebase Storage
 
             return imageRef.putFile(imageUri)

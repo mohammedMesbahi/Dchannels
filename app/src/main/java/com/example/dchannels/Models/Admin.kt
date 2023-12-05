@@ -16,6 +16,18 @@ class Admin : User {
         super.role = Constants.ROLE_ADMIN
     }
 
+    constructor(
+        id: String,
+        name: String,
+        email: String,
+        profileImage: String,
+        password: String
+    ) : super(name, email, profileImage,Constants.ROLE_ADMIN) {
+        super.id = id
+        this.password = password
+    }
+
+
     fun addModerator() {
         TODO()
     }
