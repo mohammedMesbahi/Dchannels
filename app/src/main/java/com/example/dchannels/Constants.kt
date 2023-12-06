@@ -21,5 +21,6 @@ object Constants {
     const val DEFAULT_PROFILE_IMAGE_PATH = "profile_pics/default_pic.png"
 
     const val FCM_TOKEN_FIELD = "fcmToken"
+    const val default_web_client_id = "416756097229-fkinlkt07kfeov99dqmbvobiutorvp76.apps.googleusercontent.com"
 
 }

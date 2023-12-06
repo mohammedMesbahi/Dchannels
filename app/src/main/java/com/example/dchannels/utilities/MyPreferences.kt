@@ -3,6 +3,7 @@ package com.example.dchannels.utilities
 import android.content.Context
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
+import com.google.firebase.auth.FirebaseUser
 
 class MyPreferences(context: Context) {
     fun setAdmin(admin: Admin) {
@@ -11,6 +12,14 @@ class MyPreferences(context: Context) {
         email = admin.email
         profileImage = admin.profileImage
         role = Constants.ROLE_ADMIN
+    }
+
+    fun setUser(user: FirebaseUser?) {
+        id = user?.uid!!
+        name = user.displayName!!
+        email = user.email!!
+        profileImage = user.photoUrl.toString()
+        role = Constants.ROLE_USER
     }
 
     private val sharedPreferences = context.getSharedPreferences("Identity", Context.MODE_PRIVATE)
