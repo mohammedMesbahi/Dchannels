@@ -46,7 +46,8 @@ class HomeActivity : FullScreenActivity() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "CHANNELS"
-                1 -> "MY CHANNELS"
+                1 -> "ADMINS"
+                2 -> "MY CHANNELS"
                 else -> null
             }
         }.attach()

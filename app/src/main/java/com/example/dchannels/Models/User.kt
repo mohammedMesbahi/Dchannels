@@ -1,13 +1,14 @@
 package com.example.dchannels.Models
 
-open class User {
-    var id: String?
-    var name: String
-    var email: String
-    var profileImage: String
-    var role: String
+open class User(
+    var id: String?,
+    var name: String?,
+    var email: String?,
+    var profileImage: String?,
+    var role: String?
+) {
 
-    constructor(
+/*    constructor(
         name: String,
         email: String,
         profileImage: String,
@@ -16,12 +17,19 @@ open class User {
         this.id = id
         this.profileImage = profileImage
         this.role = role
-    }
+    }*/
 
-    constructor(name: String, email: String) {
+/*    constructor(name: String, email: String) {
         this.name = name
         this.email = email
-    }
+    }*/
+/*    constructor(){
+        this.name = ""
+        this.email = ""
+        this.profileImage = ""
+        this.role = ""
+        this.id = ""
+    }*/
     fun signIn(email: String, password: String) {
         TODO("Not yet implemented")
     }
@@ -32,12 +40,4 @@ open class User {
         TODO("Not yet implemented")
 
     }
-    init {
-        this.name = ""
-        this.email = ""
-        this.profileImage = ""
-        this.role = ""
-        this.id = ""
-    }
-
 }

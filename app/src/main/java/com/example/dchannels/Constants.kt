@@ -23,4 +23,14 @@ object Constants {
     const val FCM_TOKEN_FIELD = "fcmToken"
     const val default_web_client_id = "416756097229-fkinlkt07kfeov99dqmbvobiutorvp76.apps.googleusercontent.com"
 
+    const val CHANNELS_COLLECTION = "channels"
+    const val CHANNEL_ID_FIELD = "id"
+    const val CHANNEL_NAME_FIELD = "name"
+    const val CHANNEL_DESCRIPTION_FIELD = "description"
+    const val CHANNEL_MEMBERS_FIELD = "members"
+    const val CHANNEL_ATTACHMENTS_FIELD = "attachments"
+
+    const val REALTIME_DATABASE_URL = "https://dchannels-backend-default-rtdb.europe-west1.firebasedatabase.app"
+
+
 }

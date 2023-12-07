@@ -24,6 +24,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SignInActivity : FullScreenActivity() {
@@ -42,6 +45,10 @@ class SignInActivity : FullScreenActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            startHomeActivity()
+            finish()
+        }
         // Configure Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(Constants.default_web_client_id)
@@ -86,36 +93,25 @@ class SignInActivity : FullScreenActivity() {
         Authentication.signIn(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Login successful, proceed to dashboard
                     val loggedInUser = FirebaseAuth.getInstance().currentUser
                     if (loggedInUser != null) {
                         AdminDoaStore.getInstance().getAdminById(loggedInUser.uid)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    if (task.result != null && task.result?.exists()!!) {
-                                        val admin = Admin(
-                                            task.result?.id as String,
-                                            task.result?.get(Constants.USER_NAME_FIELD).toString(),
-                                            task.result?.get(Constants.USER_EMAIL_FIELD).toString(),
-                                            task.result?.get(Constants.USER_PROFILE_IMAGE_FIELD)
-                                                .toString(),
-                                            task.result?.get(Constants.USER_PASSWORD_FIELD)
-                                                .toString(),
-                                        )
-                                        Utilities.showToast(this, "Welcome")
+                                    val admin = task.result?.getValue(Admin::class.java)
+                                    if (admin != null) {
                                         preferenceManager.setAdmin(admin)
                                         startHomeActivity()
-                                        finish()
                                     } else {
                                         Utilities.showToast(
                                             this,
-                                            "Error fetching admin details"
+                                            "Error: Admin not found in database"
                                         )
                                     }
                                 } else {
                                     Utilities.showToast(
                                         this,
-                                        "Error fetching admin details"
+                                        "Error: ${task.exception?.message}"
                                     )
                                 }
                             }
@@ -168,6 +164,7 @@ class SignInActivity : FullScreenActivity() {
             }
         }
     }
+
     // Inside LoginActivity
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)

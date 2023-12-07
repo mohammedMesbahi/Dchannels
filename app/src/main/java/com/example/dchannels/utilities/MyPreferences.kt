@@ -8,11 +8,15 @@ import com.google.firebase.auth.FirebaseUser
 class MyPreferences(context: Context) {
     fun setAdmin(admin: Admin) {
         id = admin.id!!
-        name = admin.name
-        email = admin.email
-        profileImage = admin.profileImage
+        name = admin.name!!
+        email = admin.email!!
+        profileImage = admin.profileImage!!
         role = Constants.ROLE_ADMIN
     }
+    fun getAdmin(): Admin {
+        return Admin(id,name,email,profileImage)
+    }
+
 
     fun setUser(user: FirebaseUser?) {
         id = user?.uid!!

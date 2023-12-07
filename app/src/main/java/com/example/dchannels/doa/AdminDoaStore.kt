@@ -1,9 +1,16 @@
 package com.example.dchannels.doa
 
+import android.net.Uri
+import android.widget.Toast
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
+import com.example.dchannels.utilities.Utilities
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -20,36 +27,28 @@ class AdminDoaStore : AdminDoa {
             }
             return instance!!
         }
+
+        private val adminsCollectionReference =
+            FirebaseDatabase.getInstance(Constants.REALTIME_DATABASE_URL)
+                .getReference(Constants.ADMINS_COLLECTION)
     }
 
-    override fun addAdmin(admin: Admin): Task<DocumentReference> {
-        var adminMap = mutableMapOf<String, Any>()
-
-        adminMap[Constants.USER_NAME_FIELD] = admin.name
-        adminMap[Constants.USER_EMAIL_FIELD] = admin.email
-        adminMap[Constants.USER_PASSWORD_FIELD] = admin.password
-        adminMap[Constants.USER_ROLE_FIELD] = admin.role
-
-        val db = FirebaseFirestore.getInstance()
-        return db.collection(Constants.ADMINS_COLLECTION).add(adminMap)
+    override fun addAdmin(newAdmin: Admin): Task<Void> {
+        return adminsCollectionReference.child(newAdmin.id!!).setValue(newAdmin)
     }
+
 
     override fun getAllAdmins(): List<Admin> {
         TODO("Not yet implemented")
     }
 
     override fun updateAdminImage(admin: Admin): Task<Void> {
-        var map = mutableMapOf<String, Any>()
-        map[Constants.USER_PROFILE_IMAGE_FIELD] = admin.profileImage
-        return FirebaseFirestore.
-        getInstance().
-        collection(Constants.ADMINS_COLLECTION).
-        document(admin.id!!).update(map)
+        return adminsCollectionReference.child(admin.id!!).child(Constants.USER_PROFILE_IMAGE_FIELD)
+            .setValue(admin.profileImage)
     }
 
-    override fun getAdminById(id: String): Task<DocumentSnapshot> {
-        return FirebaseFirestore.getInstance().collection(Constants.ADMINS_COLLECTION)
-            .document(id).get()
+    override fun getAdminById(id: String): Task<DataSnapshot> {
+        return adminsCollectionReference.child(id).get()
     }
 
     fun addModerator() {
@@ -60,4 +59,8 @@ class AdminDoaStore : AdminDoa {
         TODO()
     }
 
+    fun createAccountForAdmin(newAdmin: Admin): Task<AuthResult> {
+        return FirebaseAuth.getInstance()
+            .createUserWithEmailAndPassword(newAdmin.email!!, newAdmin.password!!)
+    }
 }

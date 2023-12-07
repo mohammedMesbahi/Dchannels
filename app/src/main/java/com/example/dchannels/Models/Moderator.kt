@@ -2,10 +2,9 @@ package com.example.dchannels.Models
 
 import com.example.dchannels.Constants
 
-class Moderator : User {
-    constructor(
-        name: String,
-        email: String,
-        profileImage: String
-    ) : super(name,email,profileImage,Constants.ROLE_MODERATOR)
-}
+class Moderator(
+    id: String?=null,
+    name: String?=null,
+    email: String?=null,
+    profileImage: String?=null,
+) : User(id,name,email,profileImage,Constants.ROLE_MODERATOR)
