@@ -10,17 +10,14 @@ import android.view.WindowManager
 import com.example.dchannels.databinding.ActivitySplashBinding
 
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : FullScreenActivity() {
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
-        // For the status bar
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        // For the navigation bar (optional)
-        window.decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(binding.root)
+        initialiseFullScreen(binding.mainLayout)
         // Delay in milliseconds
         val delayMillis: Long = 2000
 

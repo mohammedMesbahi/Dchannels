@@ -26,11 +26,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : FullScreenActivity() {
 
-    private lateinit var mainLayout: View
-    private val hideHandler = Handler(Looper.getMainLooper())
-    private var isFullscreen: Boolean = false
     private var gso: GoogleSignInOptions? = null
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -150,60 +147,6 @@ class SignInActivity : AppCompatActivity() {
             return false
         }
         return true
-    }
-
-
-    private fun toggle() {
-        if (isFullscreen) {
-            hide()
-        } else {
-            show()
-        }
-    }
-
-    private fun hide() {
-        // Hide UI first
-        supportActionBar?.hide()
-        isFullscreen = false
-
-        if (Build.VERSION.SDK_INT >= 30) {
-            // Use WindowInsetsController for API 30 and above
-            mainLayout.windowInsetsController?.let {
-                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        } else {
-            // Use deprecated methods for older API versions
-            mainLayout.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-        }
-    }
-
-    private fun show() {
-        // Show the system bar
-        if (Build.VERSION.SDK_INT >= 30) {
-            mainLayout.windowInsetsController?.show(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-        } else {
-            mainLayout.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-        }
-        isFullscreen = true
-
-        // Show the ActionBar
-        supportActionBar?.show()
-    }
-
-    /**
-     * Schedules a call to hide() in delayMillis, canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacksAndMessages(null)
-        hideHandler.postDelayed({ hide() }, delayMillis.toLong())
     }
 
     companion object {
