@@ -85,27 +85,19 @@ class AddAdminActivity : FullScreenActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             newAdmin.id =  task.result?.user?.uid
-                            loggedInAdmin.addAdmin(newAdmin).addOnCompleteListener(this) { task ->
+                            loggedInAdmin.addAdmin(newAdmin).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Toast.makeText(baseContext, "Admin added successfully", Toast.LENGTH_SHORT).show()
                                     if (selectedImageUri != Uri.EMPTY) {
                                         Utilities.uploadImageToCloudStorage(newAdmin, selectedImageUri as Uri)
-                                            .addOnCompleteListener(this) {
+                                            .addOnCompleteListener {
                                                 if (task.isSuccessful) {
                                                     Toast.makeText(baseContext, "image added successfully", Toast.LENGTH_SHORT).show()
                                                     newAdmin.profileImage = newAdmin.id
-                                                    Log.d("AddAdminActivity", "setListeners: ${task.result}")
                                                     AdminDoaStore.getInstance().updateAdminImage(newAdmin)
-                                                        .addOnCompleteListener() { task ->
-                                                            if (task.isSuccessful) {
-                                                                Toast.makeText(baseContext, "image updated successfully", Toast.LENGTH_SHORT).show()
-                                                            } else {
-                                                                Toast.makeText(baseContext, "Failed to update image: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                                                            }
-                                                        }
                                                 } else {
                                                     // Handle unsuccessful uploads
-                                                    Utilities.showToast(this, "failed to upload image")
+                                                    Utilities.showToast(this, "failed to upload image ${task.exception?.message} ")
                                                 }
                                                 resetAllFields()
                                             }

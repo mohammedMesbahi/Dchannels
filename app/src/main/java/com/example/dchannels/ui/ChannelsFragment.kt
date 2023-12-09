@@ -7,13 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Channel
+import com.example.dchannels.adapters.ChannelsRecyclerAdapter
 import com.example.dchannels.databinding.DialogAddChannelBinding
 import com.example.dchannels.databinding.FragmentChannelsBinding
+import com.example.dchannels.doa.ChannelDoaStore
 import com.example.dchannels.utilities.Utilities
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.Timestamp
 import com.google.firebase.database.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,11 +33,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ChannelsFragment : Fragment() {
-
+    private lateinit var adapter: ChannelsRecyclerAdapter
     private var _binding: FragmentChannelsBinding? = null
     private val binding get() = _binding!!
-    val database = FirebaseDatabase.getInstance(Constants.REALTIME_DATABASE_URL)
-    val channelsCollectionReffrence = database.getReference(Constants.CHANNELS_COLLECTION)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,23 +48,10 @@ class ChannelsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupRecyclerView()
         binding.fabAddChannel.setOnClickListener {
             showAddChannelDialog()
         }
-        channelsCollectionReffrence.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                val value = dataSnapshot.getValue<Channel>()
-                Log.d("channel", "Value is: $value")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w("channel_registration", "Failed to read value.", error.toException())
-            }
-        })
     }
 
     private fun showAddChannelDialog() {
@@ -68,33 +61,40 @@ class ChannelsFragment : Fragment() {
         // Inflate and set the layout for the dialog
 //        val view = layoutInflater.inflate(R.layout.dialog_add_channel, null)
         dialog.setContentView(bindingDialogAddChannel.root)
-        bindingDialogAddChannel.btnAddChannel.setOnClickListener  {
+        bindingDialogAddChannel.btnAddChannel.setOnClickListener {
             Log.d("channel_registration", "start adding channel")
 
-            val channelName = bindingDialogAddChannel.etChannelName.text.toString()
+            val channelLabel = bindingDialogAddChannel.etChannelLabel.text.toString()
             val channelDescription = bindingDialogAddChannel.etChannelDescription.text.toString()
-            if (channelName.isEmpty() || channelDescription.isEmpty()) {
-                Utilities.showToast(requireContext() as AppCompatActivity, "Please fill all fields")
+            if (channelLabel.isEmpty()) {
+                Utilities.showToast(
+                    requireContext() as AppCompatActivity,
+                    "Channel label is required"
+                )
                 return@setOnClickListener
             }
-            val channel = Channel()
-            val key = channelsCollectionReffrence.push().key
-            if (key == null) {
-                Log.w("key", "Couldn't get push key for channel")
-                return@setOnClickListener
-            }
-            channel.id = key
-            channel.name = channelName
-            channel.description = channelDescription
 
-            channelsCollectionReffrence.child(channel.id!!).setValue(channel).addOnCompleteListener {
+            val channel = Channel()
+            channel.label = channelLabel
+            channel.description = channelDescription
+            channel.isPublic = bindingDialogAddChannel.cbPublic.isChecked
+            channel.members = ArrayList()
+            channel.attachments = ArrayList()
+            channel.timestamp = Timestamp(Date())
+            ChannelDoaStore.getInstance().addChannel(channel).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.d("channel_registration", "channel added successfully ${it.result}")
-                    Utilities.showToast(requireContext() as AppCompatActivity, "Channel added successfully")
+                    Utilities.showToast(
+                        requireContext() as AppCompatActivity,
+                        "Channel added successfully"
+                    )
+                    channel.id = it.result?.id!!
+                    ChannelDoaStore.getInstance().updateChannel(channel)
                     dialog.dismiss()
                 } else {
-                    Log.d("channel_registration", "channel not added ${it.exception}")
-                    Utilities.showToast(requireContext() as AppCompatActivity, "Channel not added ${it.exception?.message}")
+                    Utilities.showToast(
+                        requireContext() as AppCompatActivity,
+                        "${it.exception?.message}"
+                    )
                 }
             }
         }
@@ -109,6 +109,32 @@ class ChannelsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun setupRecyclerView() {
+        val query = ChannelDoaStore.getInstance().getAllChannelsQuery()
+
+        val options = FirestoreRecyclerOptions.Builder<Channel>()
+            .setQuery(query, Channel::class.java).build()
+        adapter = ChannelsRecyclerAdapter(options, requireContext())
+        binding.channelsRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.channelsRecyclerView.adapter = adapter
+        adapter.startListening()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (adapter != null) adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (adapter != null) adapter.stopListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (adapter != null) adapter.notifyDataSetChanged()
     }
 
     companion object {

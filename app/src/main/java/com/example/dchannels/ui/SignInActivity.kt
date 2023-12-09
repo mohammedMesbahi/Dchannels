@@ -1,18 +1,10 @@
 package com.example.dchannels.ui
 
 import android.content.Intent
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
-import com.example.dchannels.R
 import com.example.dchannels.databinding.ActivitySignInBinding
 import com.example.dchannels.doa.AdminDoaStore
 import com.example.dchannels.utilities.Authentication
@@ -24,8 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -98,21 +88,14 @@ class SignInActivity : FullScreenActivity() {
                         AdminDoaStore.getInstance().getAdminById(loggedInUser.uid)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    val admin = task.result?.getValue(Admin::class.java)
+                                    val admin = task.result?.toObject(Admin::class.java)
+                                    Log.d("admin", "admin: $admin")
                                     if (admin != null) {
-                                        preferenceManager.setAdmin(admin)
+                                            preferenceManager.setAdmin(admin)
                                         startHomeActivity()
-                                    } else {
-                                        Utilities.showToast(
-                                            this,
-                                            "Error: Admin not found in database"
-                                        )
                                     }
                                 } else {
-                                    Utilities.showToast(
-                                        this,
-                                        "Error: ${task.exception?.message}"
-                                    )
+                                    Utilities.showToast(this, "${task.exception?.message}")
                                 }
                             }
                     }
@@ -139,14 +122,13 @@ class SignInActivity : FullScreenActivity() {
             return false
         }
         if (binding.passwordEditText.text.toString().isEmpty()) {
-            binding.passwordEditText.error = "Please enter password"
+            binding.passwordEditText.error = "Please enter a password"
             return false
         }
         return true
     }
 
     companion object {
-        private const val UI_ANIMATION_DELAY = 300
         private const val RC_SIGN_IN = 9001 // This can be any integer unique to the Activity
 
     }
@@ -175,9 +157,10 @@ class SignInActivity : FullScreenActivity() {
                     val user = FirebaseAuth.getInstance().currentUser
                     preferenceManager.setUser(user)
                     startHomeActivity()
-                    // Update your UI here
+
                 } else {
                     // If sign in fails, display a message to the user.
+                    Utilities.showToast(this, "Failed to sign in with google ${task.exception?.message}")
                 }
             }
     }

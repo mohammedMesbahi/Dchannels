@@ -25,10 +25,13 @@ object Constants {
 
     const val CHANNELS_COLLECTION = "channels"
     const val CHANNEL_ID_FIELD = "id"
-    const val CHANNEL_NAME_FIELD = "name"
+    const val CHANNEL_LABEL_FIELD = "label"
     const val CHANNEL_DESCRIPTION_FIELD = "description"
     const val CHANNEL_MEMBERS_FIELD = "members"
     const val CHANNEL_ATTACHMENTS_FIELD = "attachments"
+    const val CHANNEL_LAST_MESSAGE_FIELD = "lastMessage"
+    const val CHANNEL_LAST_MESSAGE_TIMESTAMP_FIELD = "lastMessageTimestamp"
+    const val CHANNEL_TIMESTAMP_FIELD = "timestamp"
 
     const val REALTIME_DATABASE_URL = "https://dchannels-backend-default-rtdb.europe-west1.firebasedatabase.app"
 

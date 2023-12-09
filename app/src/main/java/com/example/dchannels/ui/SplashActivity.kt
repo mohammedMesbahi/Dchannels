@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import com.example.dchannels.databinding.ActivitySplashBinding
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -24,9 +25,15 @@ class SplashActivity : FullScreenActivity() {
         Firebase.database.setPersistenceEnabled(true)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
-            finish()  // Optional: if you want to close the current activity
+            if (FirebaseAuth.getInstance().currentUser != null) {
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+                finish()  // Optional: if you want to close the current activity
+            }
         }, delayMillis)
 
     }

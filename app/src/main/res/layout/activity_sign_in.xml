@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:text="admin.ed2@gmail.com"
+            android:text="admin.ed01@gmail.com"
             android:layout_marginBottom="10dp"
             android:background="@drawable/edit_text_background"
             android:inputType="textEmailAddress" />

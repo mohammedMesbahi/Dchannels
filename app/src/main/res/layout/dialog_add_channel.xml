@@ -21,7 +21,7 @@
             android:contentDescription="@string/app_name"
             android:scaleType="centerInside"/>
         <EditText
-            android:id="@+id/et_channel_name"
+            android:id="@+id/et_channel_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Channel Name"
