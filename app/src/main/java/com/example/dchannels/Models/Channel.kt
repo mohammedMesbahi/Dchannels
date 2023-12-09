@@ -7,8 +7,8 @@ data class Channel(
     var label: String?=null,
     var description: String?=null,
     var isPublic:Boolean?=null,
-    var members: ArrayList<User>?=null,
-    var attachments: ArrayList<Attachment>?=null,
+//    var members: ArrayList<User>?=null,
+//    var attachments: ArrayList<Attachment>?=null,
     var lastMessage: Attachment?=null,
     var timestamp: Timestamp?=null,
     var lastMessageTimestamp: Timestamp?=null

@@ -39,7 +39,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/profile_pic_layout"
+                android:id="@+id/channel_pic_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

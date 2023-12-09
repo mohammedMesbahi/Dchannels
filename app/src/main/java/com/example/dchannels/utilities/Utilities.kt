@@ -1,6 +1,7 @@
 package com.example.dchannels.utilities
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.Button
@@ -11,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.dchannels.Constants
+import com.example.dchannels.Models.Channel
 import com.example.dchannels.Models.User
+import com.google.firebase.Timestamp
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Utilities {
     companion object {
@@ -47,8 +52,8 @@ class Utilities {
             return imageRef.putFile(imageUri)
         }
         
-        fun loadImageIntoView(imageView: ImageView, id: String) {
-            FirebaseStorage.getInstance().getReference().child("profile_pics")
+        fun loadProfileImageIntoView(imageView: ImageView, id: String) {
+            FirebaseStorage.getInstance().reference.child("profile_pics")
                 .child(id)
             if (id != null && id.isNotEmpty()){
                 // Get Firebase storage instance
@@ -70,6 +75,17 @@ class Utilities {
 
         }
 
+        fun passChannelToIntent(intent: Intent, model: Channel) {
+            intent.putExtra(Constants.CHANNEL_ID_FIELD,model.id)
+            intent.putExtra(Constants.CHANNEL_LABEL_FIELD,model.label)
+            intent.putExtra(Constants.CHANNEL_DESCRIPTION_FIELD,model.description)
+        }
+        fun foramatDate(timestamp: Timestamp): String {
+            val date = timestamp.toDate()
+
+            val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+            return dateFormat.format(date)
+        }
 
     }
 }

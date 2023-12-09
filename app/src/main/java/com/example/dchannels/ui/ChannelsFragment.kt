@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.dchannels.Constants
 import com.example.dchannels.Models.Channel
-import com.example.dchannels.adapters.ChannelsRecyclerAdapter
+import com.example.dchannels.adapters.ChannelRecyclerAdapter
 import com.example.dchannels.databinding.DialogAddChannelBinding
 import com.example.dchannels.databinding.FragmentChannelsBinding
 import com.example.dchannels.doa.ChannelDoaStore
@@ -18,9 +17,7 @@ import com.example.dchannels.utilities.Utilities
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
-import com.google.firebase.database.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,7 +30,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ChannelsFragment : Fragment() {
-    private lateinit var adapter: ChannelsRecyclerAdapter
+    private lateinit var adapter: ChannelRecyclerAdapter
     private var _binding: FragmentChannelsBinding? = null
     private val binding get() = _binding!!
 
@@ -78,8 +75,8 @@ class ChannelsFragment : Fragment() {
             channel.label = channelLabel
             channel.description = channelDescription
             channel.isPublic = bindingDialogAddChannel.cbPublic.isChecked
-            channel.members = ArrayList()
-            channel.attachments = ArrayList()
+//            channel.members = ArrayList()
+//            channel.attachments = ArrayList()
             channel.timestamp = Timestamp(Date())
             ChannelDoaStore.getInstance().addChannel(channel).addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -116,7 +113,7 @@ class ChannelsFragment : Fragment() {
 
         val options = FirestoreRecyclerOptions.Builder<Channel>()
             .setQuery(query, Channel::class.java).build()
-        adapter = ChannelsRecyclerAdapter(options, requireContext())
+        adapter = ChannelRecyclerAdapter(options, requireContext())
         binding.channelsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.channelsRecyclerView.adapter = adapter
         adapter.startListening()

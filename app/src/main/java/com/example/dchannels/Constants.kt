@@ -33,6 +33,16 @@ object Constants {
     const val CHANNEL_LAST_MESSAGE_TIMESTAMP_FIELD = "lastMessageTimestamp"
     const val CHANNEL_TIMESTAMP_FIELD = "timestamp"
 
+    const val ATTACHMENTS_COLLECTION = "attachments"
+    const val ATTACHMENT_ID_FIELD = "id"
+    const val ATTACHMENT_SENDER_FIELD = "sender"
+    const val ATTACHMENT_TYPE_FIELD = "type"
+    const val ATTACHMENT_TIMESTAMP_FIELD = "timestamp"
+    const val ATTACHMENT_TYPE_TEXT = "textMessage"
+    const val ATTACHMENT_TYPE_FILE = "file"
+
+    const val MESSAGE_TEXT_FIELD = "text"
+
     const val REALTIME_DATABASE_URL = "https://dchannels-backend-default-rtdb.europe-west1.firebasedatabase.app"
 
 

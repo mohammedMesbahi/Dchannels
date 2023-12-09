@@ -5,8 +5,9 @@ import com.example.dchannels.Models.Channel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
+
 class ChannelDoaStore : ChannelDoa {
     companion object {
         private var instance: ChannelDoaStore? = null
@@ -20,7 +21,7 @@ class ChannelDoaStore : ChannelDoa {
             }
             return instance!!
         }
-        private var channelsCollectionReference = FirebaseFirestore.getInstance()
+        var channelsCollectionReference = FirebaseFirestore.getInstance()
             .collection(Constants.CHANNELS_COLLECTION)
     }
     fun addChannel(channel: Channel): Task<DocumentReference> {

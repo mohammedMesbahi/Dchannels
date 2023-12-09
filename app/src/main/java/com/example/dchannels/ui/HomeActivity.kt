@@ -2,20 +2,16 @@ package com.example.dchannels.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.dchannels.Constants
-import com.example.dchannels.R
 import com.example.dchannels.adapters.ViewPagerAdapter
 import com.example.dchannels.databinding.ActivityHomeBinding
-import com.example.dchannels.databinding.FragmentChannelsBinding
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -63,7 +59,7 @@ class HomeActivity : FullScreenActivity() {
     private fun populateViews() {
         binding.nameTextView.text = preferenceManager.name
         if (preferenceManager.role == Constants.ROLE_ADMIN) {
-            preferenceManager.id?.let { Utilities.loadImageIntoView(binding.profileImageView, it) }
+            preferenceManager.id?.let { Utilities.loadProfileImageIntoView(binding.profileImageView, it) }
 
         } else {
             Glide.with(this)

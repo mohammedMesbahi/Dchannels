@@ -14,7 +14,10 @@
         android:theme="@style/Theme.Dchannels"
         tools:targetApi="31">
         <activity
-            android:name=".FullScreenActivity"
+            android:name=".ui.ChannelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.FullScreenActivity"
             android:exported="false" />
         <activity
             android:name=".ui.HomeActivity"
