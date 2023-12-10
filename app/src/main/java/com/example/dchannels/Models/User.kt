@@ -1,11 +1,13 @@
 package com.example.dchannels.Models
 
+import com.example.dchannels.Constants
+
 open class User(
-    var id: String?=null,
-    var name: String?=null,
-    var email: String?=null,
-    var profileImage: String?=null,
-    var role: String?=null
+    var id: String? = null,
+    var name: String? = null,
+    var email: String? = null,
+    var profileImage: String? = null,
+    var role: String? = null
 ) {
 
 /*    constructor(
@@ -45,5 +47,12 @@ open class User(
     fun sendAttachment() {
         TODO("Not yet implemented")
 
+    }
+
+    fun generateProfileImagePath(): String {
+        if (id == null)
+            throw Exception("User id is null")
+        else
+            return Constants.FOLDER_PROFILE_PICS + "/" + id
     }
 }

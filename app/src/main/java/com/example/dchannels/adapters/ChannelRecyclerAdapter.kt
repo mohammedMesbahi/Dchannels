@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dchannels.Models.Channel
 import com.example.dchannels.R
+import com.example.dchannels.doa.ChannelDoaStore
 import com.example.dchannels.ui.ChannelActivity
 import com.example.dchannels.utilities.Utilities
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -44,6 +45,14 @@ class ChannelRecyclerAdapter(options: FirestoreRecyclerOptions<Channel>, var con
             Utilities.passChannelToIntent(intent, model)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
+        }
+    }
+
+    companion object {
+        fun getOptions(): FirestoreRecyclerOptions<Channel> {
+            val query = ChannelDoaStore.getInstance().getAllChannelsQuery()
+            return FirestoreRecyclerOptions.Builder<Channel>()
+                .setQuery(query, Channel::class.java).build()
         }
     }
 }

@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Channel
 import com.example.dchannels.Models.User
+import com.example.dchannels.foa.FileUtilities
 import com.google.firebase.Timestamp
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -22,22 +23,25 @@ import java.util.*
 
 class Utilities {
     companion object {
-        fun toggleLoading(isLoading:Boolean,button: Button,progressBar: ProgressBar) {
+        fun toggleLoading(isLoading: Boolean, button: Button, progressBar: ProgressBar) {
             if (isLoading) {
-                button.visibility = View. INVISIBLE
-                progressBar.visibility = View. VISIBLE
+                button.visibility = View.INVISIBLE
+                progressBar.visibility = View.VISIBLE
             } else {
-                button.visibility = View. VISIBLE
-                progressBar.visibility = View. INVISIBLE
+                button.visibility = View.VISIBLE
+                progressBar.visibility = View.INVISIBLE
             }
         }
+
         fun setProfilePic(activity: Activity, selectedImageUri: Any, profilePic: ImageView) {
-            Glide.with(activity).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic)
+            Glide.with(activity).load(selectedImageUri).apply(RequestOptions.circleCropTransform())
+                .into(profilePic)
         }
 
         fun showToast(context: AppCompatActivity, s: String) {
             Toast.makeText(context, s, Toast.LENGTH_SHORT).show()
         }
+
         fun uploadImageToCloudStorage(
             user: User,
             imageUri: Uri
@@ -51,35 +55,32 @@ class Utilities {
 
             return imageRef.putFile(imageUri)
         }
-        
-        fun loadProfileImageIntoView(imageView: ImageView, id: String) {
-            FirebaseStorage.getInstance().reference.child("profile_pics")
-                .child(id)
-            if (id != null && id.isNotEmpty()){
-                // Get Firebase storage instance
-                val storage = FirebaseStorage.getInstance()
-                // Create a reference to the image
-                val imageRef = storage.reference.child("profile_pics").child(id)
 
+        fun loadProfileImageIntoView(imageView: ImageView, path: String) {
+            if (path != null && path.isNotEmpty()) {
                 // Download and display the image using Glide
-                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                FileUtilities.getInstance().downloadFile(path).addOnSuccessListener { uri ->
                     Glide.with(imageView.context)
                         .load(uri)
                         .apply(RequestOptions.circleCropTransform())
                         .into(imageView)
                 }.addOnFailureListener {
                     // Handle any errors
-                    showToast(imageView.context as AppCompatActivity,"Image load failed ${it.message}")
+                    showToast(
+                        imageView.context as AppCompatActivity,
+                        "Image load failed ${it.message}"
+                    )
                 }
             }
 
         }
 
         fun passChannelToIntent(intent: Intent, model: Channel) {
-            intent.putExtra(Constants.CHANNEL_ID_FIELD,model.id)
-            intent.putExtra(Constants.CHANNEL_LABEL_FIELD,model.label)
-            intent.putExtra(Constants.CHANNEL_DESCRIPTION_FIELD,model.description)
+            intent.putExtra(Constants.CHANNEL_ID_FIELD, model.id)
+            intent.putExtra(Constants.CHANNEL_LABEL_FIELD, model.label)
+            intent.putExtra(Constants.CHANNEL_DESCRIPTION_FIELD, model.description)
         }
+
         fun foramatDate(timestamp: Timestamp): String {
             val date = timestamp.toDate()
 

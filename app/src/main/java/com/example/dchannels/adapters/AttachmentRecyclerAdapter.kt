@@ -57,12 +57,10 @@ class AttachmentRecyclerAdapter(
         if (model.type.equals(Constants.ATTACHMENT_TYPE_TEXT)) {
             if (model.sender?.id.equals(FirebaseAuth.getInstance().currentUser?.uid)) {
                 // if i am the sender
-                holder.rightAttachmentLayout.visibility = View.VISIBLE
                 holder.rightTextMessageTv.text = model.text
-                holder.rightTextMessageTimeTv.text =
-                    Utilities.foramatDate(model.timestamp!!)
+                holder.rightTextMessageTimeTv.text = Utilities.foramatDate(model.timestamp!!)
+                holder.rightAttachmentLayout.visibility = View.VISIBLE
             } else {
-                holder.leftAttachmentLayout.visibility = View.VISIBLE
                 holder.leftSenderNameTv.text = model.sender?.name
                 holder.leftSenderEmailTv.text = model.sender?.email
                 holder.leftTextMessageTv.text = model.text
@@ -72,6 +70,7 @@ class AttachmentRecyclerAdapter(
                 Utilities.loadProfileImageIntoView(
                     holder.leftSenderProfileImage,
                     model.sender?.profileImage!!)
+                holder.leftAttachmentLayout.visibility = View.VISIBLE
             }
         }
     }

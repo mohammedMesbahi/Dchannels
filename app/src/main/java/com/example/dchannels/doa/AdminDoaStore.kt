@@ -7,6 +7,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class AdminDoaStore : AdminDoa {
     companion object {
@@ -22,7 +23,7 @@ class AdminDoaStore : AdminDoa {
             return instance!!
         }
 
-        private val adminsCollectionReference = FirebaseFirestore.getInstance()
+        val adminsCollectionReference = FirebaseFirestore.getInstance()
             .collection(Constants.ADMINS_COLLECTION)
 //            FirebaseDatabase.getInstance(Constants.REALTIME_DATABASE_URL)
 //                .getReference(Constants.ADMINS_COLLECTION)
@@ -43,6 +44,10 @@ class AdminDoaStore : AdminDoa {
 
     override fun getAdminById(id: String): Task<DocumentSnapshot> {
         return adminsCollectionReference.document(id).get()
+    }
+
+    override fun getAllAdminsQuery(): Query {
+        return adminsCollectionReference.orderBy(Constants.USER_NAME_FIELD, Query.Direction.ASCENDING)
     }
 
     fun addModerator() {

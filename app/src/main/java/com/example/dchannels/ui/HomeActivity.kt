@@ -59,7 +59,7 @@ class HomeActivity : FullScreenActivity() {
     private fun populateViews() {
         binding.nameTextView.text = preferenceManager.name
         if (preferenceManager.role == Constants.ROLE_ADMIN) {
-            preferenceManager.id?.let { Utilities.loadProfileImageIntoView(binding.profileImageView, it) }
+            preferenceManager.profileImage?.let { Utilities.loadProfileImageIntoView(binding.profileImageView, it) }
 
         } else {
             Glide.with(this)

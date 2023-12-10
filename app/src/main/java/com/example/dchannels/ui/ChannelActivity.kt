@@ -26,12 +26,14 @@ class ChannelActivity : FullScreenActivity() {
         channel = Channel()
         channel.id = intent.getStringExtra(Constants.CHANNEL_ID_FIELD)
         channel.label = intent.getStringExtra(Constants.CHANNEL_LABEL_FIELD)
+        channel.description = intent.getStringExtra(Constants.CHANNEL_DESCRIPTION_FIELD)
         myPreferences = MyPreferences(this)
         loggedInUser = myPreferences.getUser()
         setContentView(binding.root)
         initialiseFullScreen(binding.mainLayout)
         setupRecyclerView()
-        binding.channelLabel.text = intent.getStringExtra(Constants.CHANNEL_LABEL_FIELD)
+        binding.channelLabel.text = channel.label
+        binding.tvChannelDescription.text = channel.description
         binding.messageSendBtn.setOnClickListener {
             val textMessage = binding.chatMessageInput.text.toString().trim()
             if (textMessage.isNotEmpty()) {

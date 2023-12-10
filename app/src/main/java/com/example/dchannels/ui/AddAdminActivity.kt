@@ -13,6 +13,7 @@ import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
 import com.example.dchannels.databinding.ActivityAddAdminBinding
 import com.example.dchannels.doa.AdminDoaStore
+import com.example.dchannels.foa.FileUtilities
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -23,7 +24,7 @@ class AddAdminActivity : FullScreenActivity() {
     private var togglePasswordVisibility: Boolean = false
     private lateinit var binding: ActivityAddAdminBinding
     private var isLoading: Boolean = false
-    private lateinit var selectedImageUri: Any
+    private lateinit var selectedImageUri: Uri
     private lateinit var loggedInAdmin: Admin
     private var imagePickLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -89,11 +90,11 @@ class AddAdminActivity : FullScreenActivity() {
                                 if (task.isSuccessful) {
                                     Toast.makeText(baseContext, "Admin added successfully", Toast.LENGTH_SHORT).show()
                                     if (selectedImageUri != Uri.EMPTY) {
-                                        Utilities.uploadImageToCloudStorage(newAdmin, selectedImageUri as Uri)
+                                        FileUtilities.getInstance()
+                                            .uploadFile(selectedImageUri,newAdmin.generateProfileImagePath())
                                             .addOnCompleteListener {
                                                 if (task.isSuccessful) {
-                                                    Toast.makeText(baseContext, "image added successfully", Toast.LENGTH_SHORT).show()
-                                                    newAdmin.profileImage = newAdmin.id
+                                                    newAdmin.profileImage = newAdmin.generateProfileImagePath()
                                                     AdminDoaStore.getInstance().updateAdminImage(newAdmin)
                                                 } else {
                                                     // Handle unsuccessful uploads

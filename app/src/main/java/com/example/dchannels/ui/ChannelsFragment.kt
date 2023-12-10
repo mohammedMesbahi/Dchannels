@@ -109,11 +109,7 @@ class ChannelsFragment : Fragment() {
     }
 
     fun setupRecyclerView() {
-        val query = ChannelDoaStore.getInstance().getAllChannelsQuery()
-
-        val options = FirestoreRecyclerOptions.Builder<Channel>()
-            .setQuery(query, Channel::class.java).build()
-        adapter = ChannelRecyclerAdapter(options, requireContext())
+        adapter = ChannelRecyclerAdapter(ChannelRecyclerAdapter.getOptions(), requireContext())
         binding.channelsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.channelsRecyclerView.adapter = adapter
         adapter.startListening()

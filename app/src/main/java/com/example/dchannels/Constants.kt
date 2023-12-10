@@ -3,7 +3,7 @@ package com.example.dchannels
 object Constants {
     const val USERS_COLLECTION = "users"
     const val USER_ID_FIELD = "id"
-    const val USER_NAME_FIELD = "userName"
+    const val USER_NAME_FIELD = "name"
     const val USER_EMAIL_FIELD = "email"
     const val USER_PASSWORD_FIELD = "password"
     const val USER_PROFILE_IMAGE_FIELD = "profileImage"

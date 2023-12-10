@@ -6,33 +6,14 @@
     android:id="@+id/main_layout"
     tools:context=".ui.ChannelActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:padding="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:id="@+id/toolbar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="channelLabel"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginStart="10dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/channel_pic_layout"
-            android:id="@+id/channel_label"
-            />
-
-        <include layout="@layout/group_pic_view"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="10dp"
-            android:layout_toRightOf="@id/back_btn"
-            android:id="@+id/channel_pic_layout"
-            />
 
         <ImageButton
             android:layout_width="32dp"
@@ -43,7 +24,41 @@
             android:layout_centerVertical="true"
             android:id="@+id/back_btn"/>
 
-    </RelativeLayout>
+        <include layout="@layout/group_pic_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/channel_pic_layout"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+            >
+            <TextView
+                android:id="@+id/channel_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/channel_pic_layout"
+                android:text="channelLabel"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_channel_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/channel_pic_layout"
+                android:text="channelLabel"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
