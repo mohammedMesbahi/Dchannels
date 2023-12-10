@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
 import com.example.dchannels.Models.User
-import com.google.firebase.auth.FirebaseUser
 
 class MyPreferences(context: Context) {
     fun setAdmin(admin: Admin) {
@@ -19,12 +18,12 @@ class MyPreferences(context: Context) {
     }
 
 
-    fun setUser(user: FirebaseUser?) {
-        id = user?.uid!!
-        name = user.displayName!!
+    fun setUser(user: User) {
+        id = user.id!!
+        name = user.name!!
         email = user.email!!
-        profileImage = user.photoUrl.toString()
-        role = Constants.ROLE_USER
+        profileImage = user.profileImage!!
+        role = user.role!!
     }
 
     fun getUser(): User {

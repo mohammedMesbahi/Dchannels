@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Channel
 import com.example.dchannels.Models.User
+import com.example.dchannels.R
 import com.example.dchannels.foa.FileUtilities
 import com.google.firebase.Timestamp
 import com.google.firebase.storage.FirebaseStorage
@@ -63,6 +64,7 @@ class Utilities {
                     Glide.with(imageView.context)
                         .load(uri)
                         .apply(RequestOptions.circleCropTransform())
+                        .placeholder(R.drawable.person_icon) // Placeholder image
                         .into(imageView)
                 }.addOnFailureListener {
                     // Handle any errors

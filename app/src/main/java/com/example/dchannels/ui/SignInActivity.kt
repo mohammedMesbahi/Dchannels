@@ -5,23 +5,20 @@ import android.os.Bundle
 import android.util.Log
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
+import com.example.dchannels.Models.User
 import com.example.dchannels.databinding.ActivitySignInBinding
 import com.example.dchannels.doa.AdminDoaStore
+import com.example.dchannels.doa.UserDoaStore
 import com.example.dchannels.utilities.Authentication
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FirebaseFirestore
 
 class SignInActivity : FullScreenActivity() {
 
-    private var gso: GoogleSignInOptions? = null
     private lateinit var googleSignInClient: GoogleSignInClient
 
     lateinit var binding: ActivitySignInBinding
@@ -39,20 +36,10 @@ class SignInActivity : FullScreenActivity() {
             startHomeActivity()
             finish()
         }
-        // Configure Google Sign-In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(Constants.default_web_client_id)
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        googleSignInClient = GoogleSignIn.getClient(this, Authentication.getInstance().gso)
 
-        mainLayout = binding.mainLayout // replace with your layout ID
-        isFullscreen = true
-        // Set up the user interaction to manually show or hide the system UI.
-        mainLayout.setOnClickListener { toggle() }
-        // Trigger the initial hide() shortly after the activity has been created.
-        delayedHide(100)
+        initialiseFullScreen(binding.mainLayout)
 
         setListeners()
     }
@@ -80,7 +67,7 @@ class SignInActivity : FullScreenActivity() {
         val email = binding.emailEditText.text.toString()
         val password = binding.passwordEditText.text.toString()
 
-        Authentication.signIn(email, password)
+        Authentication.getInstance().signIn(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val loggedInUser = FirebaseAuth.getInstance().currentUser
@@ -89,9 +76,8 @@ class SignInActivity : FullScreenActivity() {
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val admin = task.result?.toObject(Admin::class.java)
-                                    Log.d("admin", "admin: $admin")
                                     if (admin != null) {
-                                            preferenceManager.setAdmin(admin)
+                                        preferenceManager.setAdmin(admin)
                                         startHomeActivity()
                                     }
                                 } else {
@@ -140,29 +126,74 @@ class SignInActivity : FullScreenActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account.idToken!!)
+                account.idToken?.let {
+                    Authentication.getInstance().firebaseAuthWithGoogle(it)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                // Sign in success, update UI with the signed-in user's information
+                                val currentUser = FirebaseAuth.getInstance().currentUser
+                                if (currentUser != null) {
+                                    val user = User(
+                                        currentUser.uid,
+                                        currentUser.displayName!!,
+                                        currentUser.email!!,
+                                        currentUser.photoUrl.toString()
+                                    )
+                                    UserDoaStore.getInstance().getUser(user)
+                                        .addOnCompleteListener { task ->
+                                            // if user is not present in database then add user else start home activity
+                                            if (task.isSuccessful) {
+                                                val user = task.result?.toObject(User::class.java)
+                                                if (user != null) {
+                                                    preferenceManager.setUser(user)
+                                                    startHomeActivity()
+                                                } else {
+                                                    val newUser = User(
+                                                        currentUser.uid,
+                                                        currentUser.displayName!!,
+                                                        currentUser.email!!,
+                                                        currentUser.photoUrl.toString(),
+                                                        Constants.ROLE_USER
+                                                    )
+                                                    UserDoaStore.getInstance().addUser(newUser)
+                                                        .addOnCompleteListener { task ->
+                                                            if (task.isSuccessful) {
+                                                                preferenceManager.setUser(newUser)
+                                                                Utilities.showToast(
+                                                                    this,
+                                                                    "welcome ✨"
+                                                                )
+                                                                startHomeActivity()
+                                                            } else {
+                                                                Utilities.showToast(
+                                                                    this,
+                                                                    "Failed to add user ${task.exception?.message}"
+                                                                )
+                                                            }
+                                                        }
+                                                }
+                                            } else {
+                                                Utilities.showToast(
+                                                    this,
+                                                    "Failed to get user ${task.exception?.message}"
+                                                )
+                                            }
+
+                                        }
+                                }
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Utilities.showToast(
+                                    this,
+                                    "Failed to sign in with google ${task.exception?.message}"
+                                )
+                            }
+                        }
+                }
             } catch (e: ApiException) {
                 Log.d("googleTag", "Google sign in failed", e)
             }
         }
-    }
-
-    // Inside LoginActivity
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = FirebaseAuth.getInstance().currentUser
-                    preferenceManager.setUser(user)
-                    startHomeActivity()
-
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Utilities.showToast(this, "Failed to sign in with google ${task.exception?.message}")
-                }
-            }
     }
 
     private fun startHomeActivity() {

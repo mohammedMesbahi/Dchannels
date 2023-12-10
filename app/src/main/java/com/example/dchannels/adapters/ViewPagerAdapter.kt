@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.dchannels.ui.AdminsFragment
 import com.example.dchannels.ui.ChannelsFragment
 import com.example.dchannels.ui.MyChannelsFragment
+import com.example.dchannels.ui.UsersFragment
 
 
 class ViewPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
@@ -16,7 +17,7 @@ class ViewPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
         return when (position) {
             0 -> ChannelsFragment()
             1 -> AdminsFragment()
-            2 -> MyChannelsFragment()
+            2 -> UsersFragment()
             else -> throw IllegalStateException("Unexpected position $position")
         }
     }

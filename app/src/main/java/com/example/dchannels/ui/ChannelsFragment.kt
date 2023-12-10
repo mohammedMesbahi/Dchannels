@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dchannels.Constants
 import com.example.dchannels.Models.Channel
+import com.example.dchannels.Models.User
 import com.example.dchannels.adapters.ChannelRecyclerAdapter
 import com.example.dchannels.databinding.DialogAddChannelBinding
 import com.example.dchannels.databinding.FragmentChannelsBinding
 import com.example.dchannels.doa.ChannelDoaStore
+import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -33,6 +36,8 @@ class ChannelsFragment : Fragment() {
     private lateinit var adapter: ChannelRecyclerAdapter
     private var _binding: FragmentChannelsBinding? = null
     private val binding get() = _binding!!
+    private lateinit var myPreferences: MyPreferences
+    private lateinit var loggedInUser : User
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +51,15 @@ class ChannelsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        binding.fabAddChannel.setOnClickListener {
-            showAddChannelDialog()
+        myPreferences = MyPreferences(requireContext())
+        loggedInUser = myPreferences.getUser()!!
+        if (loggedInUser.role != Constants.ROLE_USER){
+            binding.fabAddChannel.visibility = View.VISIBLE
+            binding.fabAddChannel.setOnClickListener {
+                showAddChannelDialog()
+            }
+        } else {
+            binding.fabAddChannel.visibility = View.GONE
         }
     }
 

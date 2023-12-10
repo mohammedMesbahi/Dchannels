@@ -1,11 +1,12 @@
 package com.example.dchannels.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.dchannels.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dchannels.adapters.UserRecyclerAdapter
 import com.example.dchannels.databinding.FragmentUsersBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +26,7 @@ class UsersFragment : Fragment() {
 
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
+    private lateinit var adapter: UserRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,20 +40,37 @@ class UsersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_users, container, false)
+        _binding = FragmentUsersBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = UserRecyclerAdapter(UserRecyclerAdapter.getOptions(), requireContext())
+        binding.usersRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.usersRecyclerView.adapter = adapter
+        adapter.startListening()
+    }
+    override fun onStart() {
+        super.onStart()
+        if (adapter != null) adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (adapter != null) adapter.stopListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (adapter != null) adapter.notifyDataSetChanged()
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UsersFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             UsersFragment().apply {

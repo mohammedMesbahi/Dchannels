@@ -8,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dchannels.Constants
+import com.example.dchannels.Models.User
 import com.example.dchannels.adapters.AdminRecyclerAdapter
 import com.example.dchannels.databinding.FragmentAdminsBinding
 import com.example.dchannels.doa.AdminDoaStore
+import com.example.dchannels.utilities.MyPreferences
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +25,9 @@ class AdminsFragment : Fragment() {
     private var _binding: FragmentAdminsBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var myPreferences: MyPreferences
+    private lateinit var loggedInUser : User
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,9 +38,17 @@ class AdminsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        binding.fabAddAdmin.setOnClickListener {
-            showActivityAddAdmin()
+        myPreferences = MyPreferences(requireContext())
+        loggedInUser = myPreferences.getUser()!!
+        if (loggedInUser.role != Constants.ROLE_USER){
+            binding.fabAddAdmin.visibility = View.VISIBLE
+            binding.fabAddAdmin.setOnClickListener {
+                showActivityAddAdmin()
+            }
+        } else {
+            binding.fabAddAdmin.visibility = View.GONE
         }
+
     }
 
     private fun setupRecyclerView() {

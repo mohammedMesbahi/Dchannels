@@ -43,7 +43,7 @@ class HomeActivity : FullScreenActivity() {
             tab.text = when (position) {
                 0 -> "CHANNELS"
                 1 -> "ADMINS"
-                2 -> "MY CHANNELS"
+                2 -> "USERS"
                 else -> null
             }
         }.attach()
