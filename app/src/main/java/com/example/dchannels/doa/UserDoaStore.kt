@@ -47,4 +47,8 @@ class UserDoaStore: UserDoa {
     override fun getAllUsersQuery(): Query {
         return usersCollectionReference.orderBy(Constants.USER_NAME_FIELD, Query.Direction.ASCENDING)
     }
+
+    override fun changeRole(user: User, role: String): Task<Void> {
+        return usersCollectionReference.document(user.id!!).update(Constants.USER_ROLE_FIELD, role)
+    }
 }

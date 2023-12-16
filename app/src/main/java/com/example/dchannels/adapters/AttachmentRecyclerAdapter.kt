@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.dchannels.Constants
 import com.example.dchannels.Models.Attachment
 import com.example.dchannels.R
@@ -67,9 +69,17 @@ class AttachmentRecyclerAdapter(
                 holder.leftTextMessageTimeTv.text =
                     Utilities.foramatDate(model.timestamp!!)
                 Log.d("AttachmentRecycler", "sender: ${model.sender?.profileImage}")
-                Utilities.loadProfileImageIntoView(
-                    holder.leftSenderProfileImage,
-                    model.sender?.profileImage!!)
+                if(model.sender?.role.equals(Constants.ROLE_ADMIN)){
+                    Utilities.loadProfileImageIntoView(
+                        holder.leftSenderProfileImage,
+                        model.sender?.profileImage!!)
+                } else{
+                    Glide.with(context)
+                        .load(model.sender?.profileImage)
+                        .apply(RequestOptions.circleCropTransform())
+                        .placeholder(R.drawable.person_icon) // Placeholder image
+                        .into(holder.leftSenderProfileImage)
+                }
                 holder.leftAttachmentLayout.visibility = View.VISIBLE
             }
         }

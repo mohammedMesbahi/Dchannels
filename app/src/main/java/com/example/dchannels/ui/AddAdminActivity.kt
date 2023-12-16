@@ -4,12 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.dchannels.Constants
 import com.example.dchannels.Models.Admin
 import com.example.dchannels.databinding.ActivityAddAdminBinding
 import com.example.dchannels.doa.AdminDoaStore
@@ -17,7 +15,6 @@ import com.example.dchannels.foa.FileUtilities
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.firebase.firestore.FirebaseFirestore
 
 class AddAdminActivity : FullScreenActivity() {
 
@@ -45,7 +42,7 @@ class AddAdminActivity : FullScreenActivity() {
                 val data = result.data
                 if (data != null && data.data != null) {
                     selectedImageUri = data.data!!
-                    Utilities.setProfilePic(this, selectedImageUri as Uri, binding.profilePic)
+                    Utilities.setImageIntoView(this, selectedImageUri as Uri, binding.profilePic)
                 }
             }
         }
@@ -127,7 +124,7 @@ class AddAdminActivity : FullScreenActivity() {
                 .maxResultSize(512, 512)
                 .createIntent { intent ->
                     imagePickLauncher?.launch(intent)
-                    Utilities.setProfilePic(this, selectedImageUri, binding.profilePic)
+                    Utilities.setImageIntoView(this, selectedImageUri, binding.profilePic)
                 }
         }
 

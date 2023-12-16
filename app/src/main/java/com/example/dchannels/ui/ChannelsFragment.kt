@@ -1,5 +1,6 @@
 package com.example.dchannels.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +18,6 @@ import com.example.dchannels.databinding.FragmentChannelsBinding
 import com.example.dchannels.doa.ChannelDoaStore
 import com.example.dchannels.utilities.MyPreferences
 import com.example.dchannels.utilities.Utilities
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import java.util.*
@@ -56,16 +56,16 @@ class ChannelsFragment : Fragment() {
         if (loggedInUser.role != Constants.ROLE_USER){
             binding.fabAddChannel.visibility = View.VISIBLE
             binding.fabAddChannel.setOnClickListener {
-                showAddChannelDialog()
+                showAddChannelActivity()
             }
         } else {
             binding.fabAddChannel.visibility = View.GONE
         }
     }
 
-    private fun showAddChannelDialog() {
+    private fun showAddChannelActivity() {
         // Create a BottomSheetDialog
-        val dialog = BottomSheetDialog(requireContext())
+        /*val dialog = BottomSheetDialog(requireContext())
         val bindingDialogAddChannel = DialogAddChannelBinding.inflate(layoutInflater)
         // Inflate and set the layout for the dialog
 //        val view = layoutInflater.inflate(R.layout.dialog_add_channel, null)
@@ -112,7 +112,10 @@ class ChannelsFragment : Fragment() {
             // Handle the dismissal
         }
         // Show the dialog
-        dialog.show()
+        dialog.show()*/
+        // start AddChannelActivity
+        val intent = Intent(activity, AddChannelActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {

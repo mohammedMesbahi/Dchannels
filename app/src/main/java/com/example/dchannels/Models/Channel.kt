@@ -1,5 +1,6 @@
 package com.example.dchannels.Models
 
+import com.example.dchannels.Constants
 import com.google.firebase.Timestamp
 
 data class Channel(
@@ -11,5 +12,13 @@ data class Channel(
 //    var attachments: ArrayList<Attachment>?=null,
     var lastMessage: Attachment?=null,
     var timestamp: Timestamp?=null,
-    var lastMessageTimestamp: Timestamp?=null
-)
+    var lastMessageTimestamp: Timestamp?=null,
+    var channelImage: String?=null
+){
+    fun generateChannelImagePath(): String {
+        if (id == null)
+            throw Exception("channel id is null")
+        else
+            return Constants.FOLDER_CHANNEL_PICS + "/" + id
+    }
+}

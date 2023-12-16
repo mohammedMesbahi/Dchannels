@@ -34,7 +34,7 @@ class Utilities {
             }
         }
 
-        fun setProfilePic(activity: Activity, selectedImageUri: Any, profilePic: ImageView) {
+        fun setImageIntoView(activity: Activity, selectedImageUri: Any, profilePic: ImageView) {
             Glide.with(activity).load(selectedImageUri).apply(RequestOptions.circleCropTransform())
                 .into(profilePic)
         }
@@ -70,7 +70,7 @@ class Utilities {
                     // Handle any errors
                     showToast(
                         imageView.context as AppCompatActivity,
-                        "Image load failed ${it.message}"
+                        "Failed To Load Image : ${it.message}"
                     )
                 }
             }
@@ -81,6 +81,7 @@ class Utilities {
             intent.putExtra(Constants.CHANNEL_ID_FIELD, model.id)
             intent.putExtra(Constants.CHANNEL_LABEL_FIELD, model.label)
             intent.putExtra(Constants.CHANNEL_DESCRIPTION_FIELD, model.description)
+            intent.putExtra(Constants.CHANNEL_IMAGE_FIELD, model.channelImage)
         }
 
         fun foramatDate(timestamp: Timestamp): String {

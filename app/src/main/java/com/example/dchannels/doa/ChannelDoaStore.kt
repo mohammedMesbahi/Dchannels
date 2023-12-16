@@ -1,6 +1,7 @@
 package com.example.dchannels.doa
 
 import com.example.dchannels.Constants
+import com.example.dchannels.Models.Attachment
 import com.example.dchannels.Models.Channel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
@@ -34,6 +35,17 @@ class ChannelDoaStore : ChannelDoa {
     fun getAllChannelsQuery(): Query {
 //        return channelsCollectionReference.orderBy(Constants.CHANNEL_LAST_MESSAGE_FIELD, Query.Direction.DESCENDING)
         return channelsCollectionReference.orderBy(Constants.CHANNEL_TIMESTAMP_FIELD, Query.Direction.DESCENDING)
+    }
+    fun updateChannelLastMessage(channel: Channel, lastMessage: Attachment): Task<Void> {
+        return channelsCollectionReference.document(channel.id!!).update(
+            Constants.CHANNEL_LAST_MESSAGE_FIELD, lastMessage,
+            Constants.CHANNEL_LAST_MESSAGE_TIMESTAMP_FIELD, lastMessage.timestamp
+        )
+    }
+    fun updateChannelImage(channel:Channel):Task<Void>{
+        return channelsCollectionReference.document(channel.id!!).update(
+            Constants.CHANNEL_IMAGE_FIELD,channel.channelImage
+        )
     }
 
 }

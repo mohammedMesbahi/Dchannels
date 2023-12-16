@@ -1,6 +1,8 @@
 package com.example.dchannels
 
 object Constants {
+    const val CHANNEL_IMAGE_FIELD= "channelImage"
+    const val FOLDER_CHANNEL_PICS = "channel_pics"
     const val USERS_COLLECTION = "users"
     const val USER_ID_FIELD = "id"
     const val USER_NAME_FIELD = "name"

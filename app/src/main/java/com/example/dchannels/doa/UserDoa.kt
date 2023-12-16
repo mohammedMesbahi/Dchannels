@@ -12,4 +12,5 @@ interface UserDoa {
     fun deleteUser(user: User)
     fun getAllUsers():List<User>
     fun getAllUsersQuery(): Query
+    fun changeRole(user: User, role: String):Task<Void>
 }

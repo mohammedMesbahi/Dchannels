@@ -40,7 +40,7 @@ class AdminsFragment : Fragment() {
         setupRecyclerView()
         myPreferences = MyPreferences(requireContext())
         loggedInUser = myPreferences.getUser()!!
-        if (loggedInUser.role != Constants.ROLE_USER){
+        if (loggedInUser.role == Constants.ROLE_ADMIN){
             binding.fabAddAdmin.visibility = View.VISIBLE
             binding.fabAddAdmin.setOnClickListener {
                 showActivityAddAdmin()

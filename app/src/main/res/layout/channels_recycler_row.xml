@@ -17,16 +17,32 @@
         android:background="@drawable/circular_bg"
         android:backgroundTint="@color/off_white"
         android:id="@+id/iv_channel_image"
-
+        android:layout_marginEnd="10dp"
         />
-    <TextView
+    <!--channel name and last message sent-->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Group Name"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:id="@+id/tv_channel_label"
-        />
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Name"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:id="@+id/tv_channel_label"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last message sent"
+            android:textSize="16sp"
+            android:layout_marginLeft="8dp"
+            android:id="@+id/tv_channel_last_message"
+            />
+    </LinearLayout>
 
 
 
